@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Set up Zig for Cross compilation
+        uses: mlugg/setup-zig@v1
+        with:
+          version: 0.14.0
+
+      - name: Set tag and directory name env
+        run: |
+          export tagName=${GITHUB_REF/refs\/tags\//}
+          echo "Tag: ${tagName}"
+          echo "RELEASE_VERSION=${tagName}" >> $GITHUB_ENV
+
+      - name: Build DLL
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: |
+          env CGO_ENABLED=1 \
+            GOARCH=386 \
+            GOOS=windows \
+            CC="zig cc -target x86-windows-gnu -march=baseline" \
+            go build -buildvcs=false -buildmode c-shared -ldflags="-s -w -extldflags=-static" -o .artifacts/twitch-integration.dll ./cmd/twitch-integration/
+
+      - name: Build Connector
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: |
+          env CGO_ENABLED=0 GOARCH=386 GOOS=windows go build -buildvcs=false -ldflags="-s -w" -o .artifacts/twitch-integration-connector.exe ./cmd/twitch-integration-connector/
+
+      - name: Calculate distribution hash
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: |
+          sha256sum ".artifacts/twitch-integration.dll" > ".artifacts/twitch-integration.dll.sha256"
+          cat ".artifacts/twitch-integration.dll.sha256"
+          sha256sum ".artifacts/twitch-integration-connector.exe" > ".artifacts/twitch-integration-connector.exe.sha256"
+          cat ".artifacts/twitch-integration-connector.exe.sha256"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            .artifacts/twitch-integration.dll
+            .artifacts/twitch-integration.dll.sha256
+            .artifacts/twitch-integration-connector.exe
+            .artifacts/twitch-integration-connector.exe.sha256
+
+      - name: Create github release
+        run: |
+          gh release create $RELEASE_VERSION --generate-notes .artifacts/twitch-integration.dll .artifacts/twitch-integration.dll.sha256 .artifacts/twitch-integration-connector.exe .artifacts/twitch-integration-connector.exe.sha256
+          exit 0
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}

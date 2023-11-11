@@ -1,0 +1,17 @@
+dist/*
+
+*.exe
+*.log
+*.txt
+cmds/*
+
+# ignore pkg IDE
+.idea/
+
+# ignore file IDE
+*.iml
+
+# ignore lib
+out/
+# ignore env file
+.env
