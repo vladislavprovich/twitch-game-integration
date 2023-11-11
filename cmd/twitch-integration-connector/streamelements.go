@@ -10,7 +10,7 @@ import (
 	"log/slog"
 
 	socketio "github.com/kirides/socketio-client"
-	"github.com/kirides/twitch-integration/streamelements"
+	"github.com/vladislavprovich/twitch-game-integration/streamelements"
 )
 
 func handleStreamElements(ctx context.Context, cnf streamElementsCnf, logger *slog.Logger, ew eventPublisher) error {

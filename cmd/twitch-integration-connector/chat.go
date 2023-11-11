@@ -10,8 +10,8 @@ import (
 
 	"log/slog"
 
-	"github.com/kirides/twitch-integration/twitch"
-	"github.com/kirides/twitch-integration/twitch/irc"
+	"github.com/vladislavprovich/twitch-game-integration/twitch"
+	"github.com/vladislavprovich/twitch-game-integration/twitch/irc"
 )
 
 type ChatMessage struct {

@@ -9,8 +9,8 @@ import (
 
 	"slices"
 
-	"github.com/kirides/twitch-integration/twitch"
-	"github.com/kirides/twitch-integration/twitch/pubsub"
+	"github.com/vladislavprovich/twitch-game-integration/twitch"
+	"github.com/vladislavprovich/twitch-game-integration/twitch/pubsub"
 )
 
 type Redemption struct {

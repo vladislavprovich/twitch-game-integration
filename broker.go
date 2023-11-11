@@ -15,13 +15,6 @@ type Broker struct {
 	logger printer
 }
 
-func NewBroker(logger printer) *Broker {
-	return &Broker{
-		events: make(map[string][]chan string),
-		mtx:    &sync.RWMutex{},
-		logger: logger,
-	}
-}
 func (b *Broker) RemoveListener(channel string, c chan string) {
 	b.mtx.Lock()
 	removed := false

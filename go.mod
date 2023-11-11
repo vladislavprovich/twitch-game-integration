@@ -1,4 +1,4 @@
-module github.com/kirides/twitch-integration
+module github.com/vladislavprovich/twitch-game-integration
 
 go 1.24
 

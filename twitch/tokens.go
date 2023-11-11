@@ -32,10 +32,12 @@ func OAuth2Validate(ctx context.Context, token string) (OAuth2ValidateResponse, 
 
 	var data OAuth2ValidateResponse
 	if !(resp.StatusCode >= 200 && resp.StatusCode < 300) {
-		return OAuth2ValidateResponse{}, fmt.Errorf("non success response code %q: %d", resp.Status, resp.StatusCode)
+		return OAuth2ValidateResponse{}, fmt.Errorf("non success response code %q: %d",
+			resp.Status,
+			resp.StatusCode)
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+	if err = json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return OAuth2ValidateResponse{}, err
 	}
 

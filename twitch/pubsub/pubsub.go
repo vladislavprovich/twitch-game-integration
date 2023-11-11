@@ -17,7 +17,7 @@ import (
 
 	"github.com/coder/websocket"
 	"github.com/google/uuid"
-	"github.com/kirides/twitch-integration/twitch"
+	"github.com/vladislavprovich/twitch-game-integration/twitch"
 )
 
 type request struct {

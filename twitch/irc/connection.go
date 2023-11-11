@@ -14,7 +14,7 @@ import (
 	"slices"
 
 	"github.com/coder/websocket"
-	"github.com/kirides/twitch-integration/twitch"
+	"github.com/vladislavprovich/twitch-game-integration/twitch"
 	"golang.org/x/time/rate"
 )
 
