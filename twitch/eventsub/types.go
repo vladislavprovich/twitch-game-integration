@@ -33,6 +33,7 @@ func appendCondition(sb *strings.Builder, value string) {
 	if sb.Len() > 0 {
 		sb.WriteString(", ")
 	}
+
 	sb.WriteString(value)
 }
 
@@ -41,6 +42,7 @@ func (c Condition) String() string {
 	if c.BroadcasterUserID != "" {
 		appendCondition(&sb, fmt.Sprintf("broadcaster_user_id: %q", c.BroadcasterUserID))
 	}
+
 	return sb.String()
 }
 

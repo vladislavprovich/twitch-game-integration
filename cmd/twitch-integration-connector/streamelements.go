@@ -94,6 +94,7 @@ func streamElementsConsumeLoop(ctx context.Context, logger *slog.Logger, handler
 					logger.Error("could not serialize redemption", slog.Any("err", err), slog.String("redeeming_user", red.Redeemer.Username))
 					continue
 				}
+
 				logger.Debug("perk redeemed", slog.String("redeeming_user", red.Redeemer.Username), slog.String("perk", redemption))
 				ew.Publish(data)
 			}

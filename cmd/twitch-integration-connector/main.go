@@ -59,10 +59,7 @@ func main() {
 
 	eventCh := make(chan []byte, 10)
 	const (
-		SIDEveryone          = `D:(A;;GWGR;;;WD)`
-		SIDAllUsers          = `D:(A;;GWGR;;;AU)`
-		SIDAllUsersNoNetwork = `D:(A;;GWGR;;;AU)(D;;GA;;;NS)`
-		SIDInteractiveUser   = `D:(A;;GWGR;;;IU)`
+		SIDInteractiveUser = `D:(A;;GWGR;;;IU)`
 	)
 	pipePath := `\\.\pipe\__TwitchIntegration_Kirides_Conn`
 	ps, err := winio.ListenPipe(pipePath, &winio.PipeConfig{MessageMode: true, SecurityDescriptor: SIDInteractiveUser})

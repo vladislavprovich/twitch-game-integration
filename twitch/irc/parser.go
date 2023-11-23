@@ -58,7 +58,7 @@ func parseTags(msg string) ([]ircTag, error) {
 var (
 	errTagsWithoutMessageBody = errors.New("tags without proper message body")
 	errNoCommandSeparator     = errors.New("message does not contain command separator")
-	errNoCommand              = errors.New("message does not contain command")
+	errNoCommand              = errors.New("messagedoes not contain command")
 	errNoArgsButDelimiter     = errors.New("message does not contain argument(s) but has delimiter")
 )
 

@@ -24,7 +24,7 @@ type twitchCnf struct {
 func defaultConfig() config {
 	return config{
 		Twitch: twitchCnf{
-			OAuthToken:               "Get it here: https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=1ab71yymdkcck627lsp93whxbmj0om&redirect_uri=https://twitchapps.com/tokengen/&scope=channel%3Aread%3Asubscriptions%20bits%3Aread%20channel%3Aread%3Aredemptions%20chat%3Aread",
+			OAuthToken:               "Get here: https://id.twitch.tv/oauth2/authorize?response_type=token&client_id=1ab71yymdkcck627lsp93whxbmj0om&redirect_uri=https://twitchapps.com/tokengen/&scope=channel%3Aread%3Asubscriptions%20bits%3Aread%20channel%3Aread%3Aredemptions%20chat%3Aread",
 			CommandPrefix:            "#",
 			ChatIntegration:          true,
 			ChannelPointsIntegration: true,

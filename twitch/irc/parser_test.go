@@ -90,7 +90,7 @@ func TestParsePrivMsgWithTags(t *testing.T) {
 
 func TestParsePrivMsgWithTagsEndingEmpty(t *testing.T) {
 
-	msg, err := parseIRCv3(`@badge-info=;badges=premium/1;client-nonce=453f818ab240af3d5890d3380eb9246e;color=;display-name=Demo;emotes=;first-msg=0;flags=;id=f878d0c2-a973-40ca-865d-57cce6ec147b;mod=0;room-id=67027439;subscriber=0;tmi-sent-ts=1639767497984;turbo=0;user-id=521149409;user-type= :demo!demo@demo.tmi.twitch.tv PRIVMSG #channel :haha ;D`)
+	msg, err := parseIRCv3(`@badge-info=;badges=prmium/1;client-nonce=453f818ab240af3d5890d3380eb9246e;color=;display-name=Demo;emotes=;first-msg=0;flags=;id=f878d0c2-a973-40ca-865d-57cce6ec147b;mod=0;room-id=67027439;subscriber=0;tmi-sent-ts=1639767497984;turbo=0;user-id=521149409;user-type= :demo!demo@demo.tmi.twitch.tv PRIVMSG #channel :haha ;D`)
 	if err != nil {
 		t.Fatalf("%v", err)
 	}

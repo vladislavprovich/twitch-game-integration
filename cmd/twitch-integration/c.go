@@ -151,7 +151,6 @@ func loadConfig() error {
 	return nil
 }
 
-//export cInitIntegration
 func cInitIntegration() *C.char {
 	funcMtx.Lock()
 	defer funcMtx.Unlock()
@@ -207,7 +206,6 @@ func cInitIntegration() *C.char {
 	return cErrorS("")
 }
 
-//export cShutdownIntegration
 func cShutdownIntegration() *C.char {
 	funcMtx.Lock()
 	defer funcMtx.Unlock()
@@ -221,7 +219,6 @@ func cShutdownIntegration() *C.char {
 	return cErrorS("")
 }
 
-//export cHandleEvents
 func cHandleEvents() *C.char {
 	funcMtx.Lock()
 	defer funcMtx.Unlock()

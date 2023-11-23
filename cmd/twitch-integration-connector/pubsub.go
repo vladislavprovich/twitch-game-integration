@@ -70,7 +70,7 @@ func handlePubSub(ctx context.Context, logger *slog.Logger, cnf twitchCnf, broke
 				broker.Publish(data)
 			}))
 
-			if err := conn.Sub(ctx, cnf.OAuthToken, pubsub.TopicChannelPoints); err != nil {
+			if err = conn.Sub(ctx, cnf.OAuthToken, pubsub.TopicChannelPoints); err != nil {
 				logger.Error("failed to subscribe to channelpoints topic.", slog.Any("err", err))
 			} else {
 				logger.Info("subscribed to channelpoints")
@@ -100,7 +100,7 @@ func handlePubSub(ctx context.Context, logger *slog.Logger, cnf twitchCnf, broke
 				broker.Publish(data)
 			}))
 
-			if err := conn.Sub(ctx, cnf.OAuthToken, pubsub.TopicBitsEvents); err != nil {
+			if err = conn.Sub(ctx, cnf.OAuthToken, pubsub.TopicBitsEvents); err != nil {
 				logger.Error("failed to subscribe to bits-events topic.", slog.Any("err", err))
 			} else {
 				logger.Info("subscribed to bits-events")
@@ -120,7 +120,7 @@ func handlePubSub(ctx context.Context, logger *slog.Logger, cnf twitchCnf, broke
 	}
 
 	go func() {
-		if err := conn.ProcessEvents(ctx); err != nil {
+		if err = conn.ProcessEvents(ctx); err != nil {
 			logger.Error("failed to process events.", slog.Any("err", err))
 			return
 		}

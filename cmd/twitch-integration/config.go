@@ -112,7 +112,7 @@ func readConfigJson() (config, error) {
 			os.WriteFile(configPath, def, 0640)
 		}
 	} else {
-		if err := json.Unmarshal(configContent, &cnf); err != nil {
+		if err = json.Unmarshal(configContent, &cnf); err != nil {
 			app.logger.Error("failed to unmarshal config", zap.Error(err))
 			return cnf, err
 		}
@@ -140,7 +140,7 @@ func watchForConfigChanges(ctx context.Context, watcher *fsnotify.Watcher, logge
 		return
 	}
 	configDir := filepath.Dir(execPath)
-	if err := watcher.Add(configDir); err != nil {
+	if err = watcher.Add(configDir); err != nil {
 		logger.Error("failed to watch for config changes", zap.Error(err))
 		return
 	}

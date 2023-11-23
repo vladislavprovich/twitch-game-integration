@@ -57,6 +57,7 @@ func (s *serviceManager) Stop() error {
 		s.running.Range(func(key, _ interface{}) bool {
 			s.logger.Info("Still running", "service", key)
 			count++
+
 			return true
 		})
 		if count == 0 {

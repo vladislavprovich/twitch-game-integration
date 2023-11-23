@@ -23,8 +23,10 @@ func writeLenPrefixed(dst io.Writer, data []byte) error {
 	if err := writeAll(dst, buf[:]); err != nil {
 		return err
 	}
+
 	if err := writeAll(dst, data); err != nil {
 		return err
 	}
+
 	return nil
 }

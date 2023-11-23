@@ -24,17 +24,22 @@ func (h *Handler) Delegate(subType string, data []byte) {
 		var typed ChannelFollowNotification
 		if err := json.Unmarshal(data, &typed); err != nil {
 			fmt.Printf("failed to handle %s\n", subType)
+
 			return
 		}
+
 		if h.OnChannelFollow != nil {
 			h.OnChannelFollow(typed.Event)
 		}
+
 	case SubChannelChannelPointsCustomRewardRedemptionAdd:
 		var typed RewardAddNotification
 		if err := json.Unmarshal(data, &typed); err != nil {
 			fmt.Printf("failed to handle %s\n", subType)
+
 			return
 		}
+
 		if h.OnChannelChannelPointsCustomRewardRedemptionAdd != nil {
 			h.OnChannelChannelPointsCustomRewardRedemptionAdd(typed.Event)
 		}
@@ -42,8 +47,10 @@ func (h *Handler) Delegate(subType string, data []byte) {
 		var typed RewardUpdateNotification
 		if err := json.Unmarshal(data, &typed); err != nil {
 			fmt.Printf("failed to handle %s\n", subType)
+
 			return
 		}
+
 		if h.OnChannelChannelPointsCustomRewardRedemptionUpdate != nil {
 			h.OnChannelChannelPointsCustomRewardRedemptionUpdate(typed.Event)
 		}

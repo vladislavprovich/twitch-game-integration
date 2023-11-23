@@ -9,9 +9,7 @@ const (
 type ItemType string
 
 const (
-	ItemPerk   ItemType = "perk"
-	ItemEffect ItemType = "effect"
-	ItemCode   ItemType = "code"
+	ItemPerk ItemType = "perk"
 )
 
 type Redemption struct {

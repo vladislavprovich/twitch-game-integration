@@ -18,7 +18,7 @@ import (
 	"golang.org/x/time/rate"
 )
 
-var ErrRateExceeded = errors.New("ratelimit exceeded")
+var ErrRateExceeded = errors.New("ratelimit_exceeded")
 
 type messageHandler chan *Message
 

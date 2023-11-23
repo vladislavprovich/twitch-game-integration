@@ -63,7 +63,7 @@ func handleEventPipe(ctx context.Context, app *App, logger *zap.Logger) error {
 				Channel string `json:"channel"`
 			}
 			var chatMessage ChatMessage
-			if err := json.Unmarshal(event.Data, &chatMessage); err != nil {
+			if err = json.Unmarshal(event.Data, &chatMessage); err != nil {
 				return fmt.Errorf("could not deserialize chat message event. %w", err)
 			}
 			if fn, ok := cnf.Twitch.Chat[chatMessage.Text]; ok {
@@ -80,7 +80,7 @@ func handleEventPipe(ctx context.Context, app *App, logger *zap.Logger) error {
 				Channel  string `json:"channel"`
 			}
 			var redeption Redemption
-			if err := json.Unmarshal(event.Data, &redeption); err != nil {
+			if err = json.Unmarshal(event.Data, &redeption); err != nil {
 				return fmt.Errorf("could not deserialize redeption event. %w", err)
 			}
 			logger.Debug("reward triggered", zap.String("redeemer", redeption.Redeemer), zap.String("reward", redeption.Title))
@@ -98,7 +98,7 @@ func handleEventPipe(ctx context.Context, app *App, logger *zap.Logger) error {
 				Channel  string `json:"channel"`
 			}
 			var redeption BitsEvent
-			if err := json.Unmarshal(event.Data, &redeption); err != nil {
+			if err = json.Unmarshal(event.Data, &redeption); err != nil {
 				return fmt.Errorf("could not deserialize redeption event. %w", err)
 			}
 			logger.Debug("bits triggered", zap.String("bits_user", redeption.User), zap.Int("bits", redeption.BitsUsed))
@@ -116,7 +116,7 @@ func handleEventPipe(ctx context.Context, app *App, logger *zap.Logger) error {
 				Channel  string `json:"channel"`
 			}
 			var redeption Redemption
-			if err := json.Unmarshal(event.Data, &redeption); err != nil {
+			if err = json.Unmarshal(event.Data, &redeption); err != nil {
 				return fmt.Errorf("could not deserialize streamelements-perk event. %w", err)
 			}
 			logger.Debug("StreamElements perk triggered", zap.String("redeemer", redeption.Redeemer), zap.String("perk", redeption.Title))

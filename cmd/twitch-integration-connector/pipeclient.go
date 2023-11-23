@@ -30,7 +30,7 @@ func handlePipeClients(ctx context.Context, logger *slog.Logger, ps net.Listener
 			broker.Add(eventStream)
 			defer broker.Remove(eventStream)
 
-			if err := handlePipeClient(ctx, c, eventStream); err != nil {
+			if err = handlePipeClient(ctx, c, eventStream); err != nil {
 				logger.Error("failed to handle client", slog.Any("err", err))
 			}
 		}(conn)
