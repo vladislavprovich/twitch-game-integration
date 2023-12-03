@@ -4,72 +4,121 @@ on:
   workflow_dispatch:
   push:
     tags:
-      - "v*"
+      - 'v*'
 
 defaults:
   run:
     shell: bash
+    working-directory: ${{ github.workspace }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    strategy:
+      matrix:
+        goos: [windows]
+        goarch: [386]
+        include:
+          - goos: windows
+            goarch: 386
+            zig_target: x86-windows-gnu
 
-      - name: Set up Go
+    env:
+      ARTIFACT_DIR: .artifacts
+      CC_ZIG: zig
+      RELEASE_VERSION: ${{ github.ref_name }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup Go and cache modules
         uses: actions/setup-go@v5
         with:
           go-version: '1.24'
+          cache: 'modules'
 
-      - name: Set up Zig for Cross compilation
+      - name: Setup Zig for cross-compilation and cache
         uses: mlugg/setup-zig@v1
         with:
           version: 0.14.0
+      - name: Cache Zig package registry
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/zig
+          key: zig-${{ matrix.goos }}-${{ matrix.goarch }}-v0.14.0
 
-      - name: Set tag and directory name env
+      - name: Prepare artifact directory
         run: |
-          export tagName=${GITHUB_REF/refs\/tags\//}
-          echo "Tag: ${tagName}"
-          echo "RELEASE_VERSION=${tagName}" >> $GITHUB_ENV
+          rm -rf "${ARTIFACT_DIR}"
+          mkdir -p "${ARTIFACT_DIR}"
 
-      - name: Build DLL
-        working-directory: ${{env.GITHUB_WORKSPACE}}
+      - name: Build C-shared DLL
+        env:
+          CGO_ENABLED: 1
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CC: "${CC_ZIG} cc -target ${{ matrix.zig_target }} -march=baseline"
         run: |
-          env CGO_ENABLED=1 \
-            GOARCH=386 \
-            GOOS=windows \
-            CC="zig cc -target x86-windows-gnu -march=baseline" \
-            go build -buildvcs=false -buildmode c-shared -ldflags="-s -w -extldflags=-static" -o .artifacts/twitch-integration.dll ./cmd/twitch-integration/
+          go build \
+            -buildvcs=false \
+            -buildmode=c-shared \
+            -ldflags="-s -w -extldflags=-static" \
+            -o "${ARTIFACT_DIR}/twitch-integration.dll" \
+            ./cmd/twitch-integration/
 
-      - name: Build Connector
-        working-directory: ${{env.GITHUB_WORKSPACE}}
+      - name: Build Windows Connector EXE
+        env:
+          CGO_ENABLED: 0
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
         run: |
-          env CGO_ENABLED=0 GOARCH=386 GOOS=windows go build -buildvcs=false -ldflags="-s -w" -o .artifacts/twitch-integration-connector.exe ./cmd/twitch-integration-connector/
+          go build \
+            -buildvcs=false \
+            -ldflags="-s -w" \
+            -o "${ARTIFACT_DIR}/twitch-integration-connector.exe" \
+            ./cmd/twitch-integration-connector/
 
-      - name: Calculate distribution hash
-        working-directory: ${{env.GITHUB_WORKSPACE}}
+      - name: Generate SHA256 checksums
         run: |
-          sha256sum ".artifacts/twitch-integration.dll" > ".artifacts/twitch-integration.dll.sha256"
-          cat ".artifacts/twitch-integration.dll.sha256"
-          sha256sum ".artifacts/twitch-integration-connector.exe" > ".artifacts/twitch-integration-connector.exe.sha256"
-          cat ".artifacts/twitch-integration-connector.exe.sha256"
+          for f in "${ARTIFACT_DIR}"/*.dll "${ARTIFACT_DIR}"/*.exe; do
+            sha256sum "$f" > "${f}.sha256"
+            cat "${f}.sha256"
+          done
 
-      - name: Upload artifacts
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: dist
-          path: |
-            .artifacts/twitch-integration.dll
-            .artifacts/twitch-integration.dll.sha256
-            .artifacts/twitch-integration-connector.exe
-            .artifacts/twitch-integration-connector.exe.sha256
+          path: ${{ env.ARTIFACT_DIR }}
 
-      - name: Create github release
-        run: |
-          gh release create $RELEASE_VERSION --generate-notes .artifacts/twitch-integration.dll .artifacts/twitch-integration.dll.sha256 .artifacts/twitch-integration-connector.exe .artifacts/twitch-integration-connector.exe.sha256
-          exit 0
-        if: startsWith(github.ref, 'refs/tags/')
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: dist
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.RELEASE_VERSION }}
+          name: Release ${{ env.RELEASE_VERSION }}
+          body: |
+            Автоматично згенерований реліз для версії ${{ env.RELEASE_VERSION }}.
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Release Assets
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            .artifacts/*.dll
+            .artifacts/*.exe
+            .artifacts/*.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
